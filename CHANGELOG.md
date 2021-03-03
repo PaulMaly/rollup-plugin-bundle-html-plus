@@ -1,3 +1,9 @@
+## 1.2.0 (2019-03-03)
+* Dependencies updated.
+* Many improvements from @thomzz in original repo (`inline`, `clean`, etc.)
+* Now ignored files (`ignore` option) not cleaning.
+* External files now can be enjected to the final html as is, without any additional processing.
+
 ## 0.2.2 (2019-10-17)
 * Added: Parameter for onlinePath prefix to the files.
 ## 0.2.0 (2019-05-21)

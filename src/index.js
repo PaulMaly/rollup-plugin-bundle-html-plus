@@ -1,4 +1,4 @@
-import { statSync, readFileSync, writeFileSync, readdirSync, unlinkSync } from 'fs';
+import { statSync, readFileSync, writeFileSync, readdirSync, unlinkSync, existsSync } from 'fs';
 import { relative, basename, sep as pathSeperator } from 'path';
 import CleanCss from 'clean-css'
 import hasha from 'hasha';
@@ -69,8 +69,13 @@ export default (opt = {}) => {
 				})
 			}
 
+			const processedFiles = [];
+
 			fileList.forEach(node => {
 				let { type, file } = node;
+
+				const external = !existsSync(file);
+
 				if (ignore && file.match(ignore)) {
 					return;
 				}
@@ -79,7 +84,7 @@ export default (opt = {}) => {
 				let code = '';
 				const isHash = /\[hash\]/.test(file);
 
-				if (inline || isHash) {
+				if ((inline || isHash) && !external) {
 					if (file === destPath) {
 						// bundle will remove the last line of the source code(//# sourceMappingURL=xxx), so it's needed to add this
 						code = `${bundle}//# sourceMappingURL=${basename(file)}.map`;
@@ -88,7 +93,7 @@ export default (opt = {}) => {
 					}
 				}
 
-				if (isHash) {
+				if (isHash && !external) {
 					if (sourcemap) {
 						let srcmapFile = file + ".map";
 						let srcmapCode = readFileSync(srcmapFile).toString();
@@ -109,8 +114,8 @@ export default (opt = {}) => {
 				}
 
 				
-				let src = isURL(file) ? file : absolutePathPrefix + relative(destDir, file).replace(/\\/g, '/');
-				if (onlinePath) { 
+				let src = (isURL(file) || external) ? file : absolutePathPrefix + relative(destDir, file).replace(/\\/g, '/');
+				if (onlinePath) {
 					const filename = file.split('/').slice(-1)[0];
 					const slash = onlinePath.slice(-1) === '/' ? '' : '/';
 					src = onlinePath + slash + filename;
@@ -121,15 +126,17 @@ export default (opt = {}) => {
 
 				if (type === 'js') {
 					const script = `<script type="text/javascript" src="${src}"></script>\n`;
-					const content = inline ? `<script type=${scriptType ? scriptType : "text/javascript"}>\n${code}\n</script>\n` : script;
+					const content = inline && !external && code ? `<script type=${scriptType ? scriptType : "text/javascript"}>\n${code}\n</script>\n` : script;
 					inject === "head" ? head.append(content) : body.append(content);
 				} else if (type === 'css') {
 					const style = `<link rel="stylesheet" href="${src}">\n`;
 					const content = inline ? `<style>\n${minifyCss ? new CleanCss().minify(code).styles : code}\n</style>\n` : style;
 					head.append(content);
 				}
+
+				processedFiles.push(node);
 			});
-			if (clean) fileList.forEach(f => unlinkSync(f.file));
+			if (clean) processedFiles.forEach(f => existsSync(f.file) && unlinkSync(f.file));
 			writeFileSync(destFile, $.html());
 		}
 	};

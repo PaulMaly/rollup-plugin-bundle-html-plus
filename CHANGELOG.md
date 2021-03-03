@@ -1,3 +1,6 @@
+## 1.2.1 (2019-03-03)
+* Update README.
+
 ## 1.2.0 (2019-03-03)
 * Dependencies updated.
 * Many improvements from @thomzz in original repo (`inline`, `clean`, etc.)

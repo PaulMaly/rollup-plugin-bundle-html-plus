@@ -1,19 +1,19 @@
-# rollup-plugin-bundle-html-thomzz
-This plugin is forked from ©[rollup-plugin-bundle-html](https://github.com/haifeng2013/rollup-plugin-bundle-html),
+# rollup-plugin-bundle-html-plus
+This plugin is forked from ©[rollup-plugin-bundle-html-plus](https://github.com/PaulMaly/rollup-plugin-bundle-html-plus),
 and is virtually the same, appart from adding more flexibility for my own needs, and adding an some useful options,
 like the possibilty to inline file content directly to the generated html, to exclude files, and to minify inlined css with "clean-css".
 
 ## Installation
 
-    yarn add --dev rollup-plugin-bundle-html-thomzz
+    yarn add --dev rollup-plugin-bundle-html-plus
 
 or
 
-    npm install -D rollup-plugin-bundle-html-thomzz
+    npm install -D rollup-plugin-bundle-html-plus
 
 ## Usage
 ```js
-import html from 'rollup-plugin-bundle-html-thomzz';
+import html from 'rollup-plugin-bundle-html-plus';
 
 export default {
   input: 'src/main.js',

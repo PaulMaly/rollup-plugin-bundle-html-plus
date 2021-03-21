@@ -72,9 +72,9 @@ export default (opt = {}) => {
 			const processedFiles = [];
 
 			fileList.forEach(node => {
-				let { type, file } = node;
+				let { type, file, content, inject: fileInject } = node;
 
-				const external = !existsSync(file);
+				const external = content || !existsSync(file);
 
 				if (ignore && file.match(ignore)) {
 					return;
@@ -127,11 +127,13 @@ export default (opt = {}) => {
 				if (type === 'js') {
 					const script = `<script type="text/javascript" src="${src}"></script>\n`;
 					const content = inline && !external && code ? `<script type=${scriptType ? scriptType : "text/javascript"}>\n${code}\n</script>\n` : script;
-					inject === "head" ? head.append(content) : body.append(content);
+					(fileInject || inject) === 'head' ? head.append(content) : body.append(content);
 				} else if (type === 'css') {
 					const style = `<link rel="stylesheet" href="${src}">\n`;
-					const content = inline ? `<style>\n${minifyCss ? new CleanCss().minify(code).styles : code}\n</style>\n` : style;
-					head.append(content);
+					const content = inline && !external && code ? `<style>\n${minifyCss ? new CleanCss().minify(code).styles : code}\n</style>\n` : style;
+					fileInject === 'body' ? body.append(content) : head.append(content);
+				} else if (content) {
+					(fileInject || inject) === 'head' ? head.append(content) : body.append(content);
 				}
 
 				processedFiles.push(node);

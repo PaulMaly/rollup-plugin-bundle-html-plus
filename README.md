@@ -34,8 +34,11 @@ export default {
         inline: true,
         minifyCss: true,
         externals: [
-            { type: 'js', file: "file1.js", pos: 'before' },
-            { type: 'js', file: "file2.js", pos: 'before' }
+            { type: 'js', file: 'file1.js', pos: 'before' },
+            { type: 'js', file: 'file2.js', pos: 'before' }
+            { type: 'js', file: 'file2.js', pos: 'before', inject: 'body' },
+            { type: 'css', file: 'style1.css', pos: 'before' },
+            { content: '<meta name="description" content="">', pos: 'before' },
         ]
     })
   ]

@@ -1,3 +1,6 @@
+## 1.4.0
+* Fix `scriptType` are not applied to regular script tag.
+
 ## 1.3.0 (2019-03-10)
 * New external content type. Now any content can be injected via `externals` array using `content` field.
 * External resource now can have own `inject` property which will re-write general one.

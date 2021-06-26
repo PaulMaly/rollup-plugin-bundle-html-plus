@@ -32,7 +32,21 @@ function isRollupV2(options) {
 }
 
 export default (opt = {}) => {
-	const { template, filename, clean, externals, scriptType, inject, dest, absolute, inline, minifyCss, ignore, exclude, onlinePath } = opt;
+	const { 
+		scriptType = 'text/javascript',
+		onlinePath,
+		externals,
+		minifyCss,
+		template,
+		filename,
+		absolute,
+		exclude,
+		inject,
+		inline,
+		ignore,
+		clean,
+		dest,
+	} = opt;
 
 	return {
 		name: 'html',
@@ -125,12 +139,18 @@ export default (opt = {}) => {
 				}
 
 				if (type === 'js') {
-					const script = `<script type="text/javascript" src="${src}"></script>\n`;
-					const content = inline && !external && code ? `<script type=${scriptType ? scriptType : "text/javascript"}>\n${code}\n</script>\n` : script;
+
+					const content = inline && !external && code ? 
+						`<script type="${scriptType}">\n${code}\n</script>\n` : 
+						`<script type="${scriptType}" src="${src}"></script>\n`;
+
 					(fileInject || inject) === 'head' ? head.append(content) : body.append(content);
 				} else if (type === 'css') {
-					const style = `<link rel="stylesheet" href="${src}">\n`;
-					const content = inline && !external && code ? `<style>\n${minifyCss ? new CleanCss().minify(code).styles : code}\n</style>\n` : style;
+
+					const content = inline && !external && code ? 
+						`<style>\n${minifyCss ? new CleanCss().minify(code).styles : code}\n</style>\n` : 
+						`<link rel="stylesheet" href="${src}">\n`;
+
 					fileInject === 'body' ? body.append(content) : head.append(content);
 				} else if (content) {
 					(fileInject || inject) === 'head' ? head.append(content) : body.append(content);
